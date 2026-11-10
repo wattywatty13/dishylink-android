@@ -1,0 +1,14 @@
+{
+  "appId": "com.dishylink.android",
+  "appName": "Dishylink",
+  "webDir": "dist-mobile",
+  "android": {
+    "allowMixedContent": false,
+    "adjustMarginsForEdgeToEdge": "force",
+    "captureInput": true,
+    "webContentsDebuggingEnabled": true
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

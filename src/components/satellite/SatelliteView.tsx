@@ -8,7 +8,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useTimeLocale } from "../../hooks/useTimeLocale";
 import { AnimatePresence, motion } from "motion/react";
-import { Minimize2, Pause, Play } from "lucide-react";
+import { Info, Minimize2, Pause, Play } from "lucide-react";
 import type {
   DishObstructionMapJson,
   DishObstructionStatsJson,
@@ -90,6 +90,11 @@ export function SatelliteView({
   // Immersive view: clears the panels, scrubber and legend, leaving only the sky
   // and its controls. The buttons stay so the view can be left again.
   const [immersive, setImmersive] = useState(false);
+  // On a phone the details card would cover most of the sky, so it starts folded
+  // away behind an info control; elsewhere it is always shown, as before.
+  const [phone] = useState(() => window.matchMedia?.("(max-width: 639px)").matches ?? false);
+  const [touch] = useState(() => window.matchMedia?.("(pointer: coarse)").matches ?? false);
+  const [detailsOpen, setDetailsOpen] = useState(!phone);
   const trimmed = useDomeTrim();
   const [unsupported, setUnsupported] = useState(false);
   // The picker opens to its form when there is no location, and folds away once one
@@ -299,7 +304,7 @@ export function SatelliteView({
 
       {/* Wide enough that LocationSetup's two buttons sit on one row. */}
       <div
-        className={`pointer-events-none absolute inset-y-0 left-0 flex w-[380px] flex-col gap-4 overflow-y-auto p-6 ${immersive ? "hidden" : ""}`}
+        className={`pointer-events-none absolute inset-y-0 left-0 flex w-[380px] flex-col gap-4 overflow-y-auto p-6 max-sm:bottom-auto max-sm:max-h-[calc(100%-150px)] max-sm:w-full max-sm:gap-3 max-sm:px-3 max-sm:pt-[60px] max-sm:pb-3 ${immersive || !detailsOpen ? "hidden" : ""}`}
       >
         <div className='flex flex-col gap-1.5'>
           <h1 className='m-0 text-[15px] font-semibold'>{t("satellite.title")}</h1>
@@ -425,7 +430,16 @@ export function SatelliteView({
 
       <SatelliteCallout ref={calloutRef} selected={selected} onClose={() => setSelected(null)} />
 
-      <div className='absolute right-6 top-5 flex items-center gap-2'>
+      <div className='absolute right-6 top-5 flex items-center gap-2 max-sm:top-2.5 max-sm:right-3 max-sm:gap-1.5'>
+        {phone && !immersive && (
+          <SkyControl
+            label={detailsOpen ? t("satellite.hideDetails") : t("satellite.showDetails")}
+            pressed={detailsOpen}
+            onClick={() => setDetailsOpen((open) => !open)}
+          >
+            <Info size={16} />
+          </SkyControl>
+        )}
         <SkyControl
           label={immersive ? t("satellite.exitImmersive") : t("satellite.immersive")}
           pressed={immersive}
@@ -468,7 +482,7 @@ export function SatelliteView({
       </div>
 
       {!immersive && domeShown && snapshots.length >= 2 && (
-        <div className='absolute bottom-[96px] left-1/2 w-[min(720px,55vw)] min-w-[320px] -translate-x-1/2'>
+        <div className='absolute bottom-[96px] left-1/2 w-[min(720px,55vw)] min-w-[320px] -translate-x-1/2 max-sm:bottom-[124px] max-sm:w-[calc(100%-24px)] max-sm:min-w-0'>
           {viewingHistory && scrubIndex !== null && (
             <p className='m-0 pb-1 text-center text-[11.5px] font-medium text-muted-foreground'>
               {t("satellite.viewingAsOf", {
@@ -487,13 +501,13 @@ export function SatelliteView({
 
       {/* The key names the dome's colours, so it goes when the dome does. */}
       {!immersive && domeShown && (
-        <div className='pointer-events-none absolute bottom-[22px] left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-card px-[18px] py-1.5 [&>div]:flex-nowrap [&>div]:pt-0'>
+        <div className='pointer-events-none absolute bottom-[22px] left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-card px-[18px] py-1.5 [&>div]:flex-nowrap [&>div]:pt-0 max-sm:w-[calc(100%-20px)] max-sm:rounded-2xl max-sm:whitespace-normal max-sm:px-3.5 max-sm:py-2 max-sm:[&>div]:flex-wrap max-sm:[&>div]:justify-center max-sm:[&>div]:gap-x-3'>
           <ObstructionKey withServing />
         </div>
       )}
 
       <p
-        className={`pointer-events-none absolute bottom-[74px] left-1/2 m-0 -translate-x-1/2 text-[11px] text-[#8b97a8] opacity-80 ${immersive ? "hidden" : ""}`}
+        className={`pointer-events-none absolute bottom-[74px] left-1/2 m-0 -translate-x-1/2 text-[11px] text-[#8b97a8] opacity-80 max-sm:bottom-[96px] max-sm:whitespace-nowrap ${immersive ? "hidden" : ""}`}
       >
         {unsupported
           ? t("satellite.noWebGl")
@@ -501,7 +515,9 @@ export function SatelliteView({
             ? t("satellite.waitingForMap")
             : viewingHistory
               ? t("satellite.timeLapse")
-              : t("satellite.controlsHint")}
+              : touch
+                ? t("satellite.controlsHintTouch")
+                : t("satellite.controlsHint")}
       </p>
     </div>
   );

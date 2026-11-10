@@ -53,9 +53,11 @@ const THEME_ICON: Record<ThemeName, typeof SunIcon> = {
 // button — repeated in the strip.
 const statusItem =
   "inline-flex items-center gap-[7px] whitespace-nowrap text-[12.5px] font-medium text-ink-secondary";
-const statusDivider = "border-l border-input pl-2.5";
+// The divided readouts (country, uptime) give way on a phone, leaving the
+// connection state beside the logo.
+const statusDivider = "border-l border-input pl-2.5 max-sm:hidden";
 const iconButton =
-  "inline-flex size-8 cursor-pointer items-center justify-center rounded-full border-0 bg-card text-ink-secondary transition-colors hover:text-foreground";
+  "inline-flex size-8 max-sm:size-9 cursor-pointer items-center justify-center rounded-full border-0 bg-card text-ink-secondary transition-colors hover:text-foreground";
 
 export function TopBar({
   connectionState,
@@ -71,16 +73,19 @@ export function TopBar({
   const ThemeIcon = THEME_ICON[theme];
 
   return (
-    <header className='sticky top-0 z-20 flex items-center justify-between gap-4 bg-gradient-to-b from-[color-mix(in_srgb,var(--page)_72%,transparent)] via-[color-mix(in_srgb,var(--page)_42%,transparent)] to-transparent px-6 pt-3.5 pb-4'>
-      <div className='flex min-w-0 items-center gap-[11px]'>
+    <header className='sticky top-0 z-20 flex items-center justify-between gap-4 bg-gradient-to-b from-[color-mix(in_srgb,var(--page)_72%,transparent)] via-[color-mix(in_srgb,var(--page)_42%,transparent)] to-transparent px-6 pt-3.5 pb-4 max-sm:gap-2 max-sm:bg-page max-sm:bg-none max-sm:px-2.5 max-sm:pt-2 max-sm:pb-2.5'>
+      <div className='flex min-w-0 items-center gap-[11px] max-sm:gap-2'>
         <AppLogo size={28} className='flex-none' />
-        <span className='text-[17px] font-bold tracking-[0.16em]'>Dishylink</span>
+        <span className='truncate text-[17px] font-bold tracking-[0.16em] max-sm:text-[15px] max-sm:tracking-[0.1em]'>
+          Dishylink
+        </span>
       </div>
-      <div className='flex flex-none flex-wrap items-center justify-end gap-3'>
+      <div className='flex flex-none flex-wrap items-center justify-end gap-3 max-sm:gap-1.5'>
         <div className='flex items-center gap-2.5'>
-          <span className={statusItem}>
+          <span className={statusItem} title={t(CONNECTION_LABEL[connectionState])}>
             <span className={`${statusDot} ${CONNECTION_DOT[connectionState]} `} />
-            {t(CONNECTION_LABEL[connectionState])}
+            {/* On a phone the dot alone carries it, leaving the name room. */}
+            <span className='max-sm:sr-only'>{t(CONNECTION_LABEL[connectionState])}</span>
           </span>
           {status?.deviceInfo?.countryCode && (
             <span className={`${statusItem} ${statusDivider}`}>

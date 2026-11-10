@@ -5,6 +5,8 @@ import type { TranslationKey } from "../../i18n";
 import { readToolbarStyle, subscribeToToolbarStyle } from "../../lib/toolbarStyle";
 import { ToolbarDock } from "./ToolbarDock";
 import { ToolbarRail } from "./ToolbarRail";
+import { ToolbarMenu } from "./ToolbarMenu";
+import { usesPhoneMenu } from "../../lib/phoneMenu";
 import { SpeedometerIcon } from "../../assets/icons/SpeedometerIcon";
 import { CrosshairIcon } from "../../assets/icons/CrosshairIcon";
 import { ChartLineIcon } from "../../assets/icons/ChartLineIcon";
@@ -42,9 +44,11 @@ interface AppToolbarProps {
   /** The open panel, so the active destination lights up. */
   activeId: string | null;
   onSelect: (id: ToolbarItemId) => void;
+  /** Close any open panel and show the dashboard (the phone menu's first row). */
+  onHome?: () => void;
 }
 
-export function AppToolbar({ activeId, onSelect }: AppToolbarProps) {
+export function AppToolbar({ activeId, onSelect, onHome }: AppToolbarProps) {
   const { t } = useTranslation();
   const toolbarStyle = useSyncExternalStore(subscribeToToolbarStyle, readToolbarStyle);
   const items: ToolbarItem[] = TOOLBAR_ITEMS.map(({ id, labelKey, Icon }) => ({
@@ -53,6 +57,18 @@ export function AppToolbar({ activeId, onSelect }: AppToolbarProps) {
     Icon,
   }));
   const navLabel = t("navigation.dashboardSections");
+
+  if (usesPhoneMenu()) {
+    return (
+      <ToolbarMenu
+        items={items}
+        activeId={activeId}
+        onSelect={onSelect}
+        onHome={onHome ?? (() => {})}
+        navLabel={navLabel}
+      />
+    );
+  }
 
   return (
     <AnimatePresence mode='wait'>

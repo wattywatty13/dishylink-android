@@ -39,10 +39,16 @@
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "build:android": "vite build --config vite.mobile.config.ts && cap sync android",
+    "apk:android": "cd android && gradlew assembleDebug",
+    "test:android": "vitest run --config vite.mobile.config.ts",
+    "typecheck:android": "tsc --noEmit -p mobile/tsconfig.json"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.6.0",
+    "@capacitor/android": "7.6.10",
+    "@capacitor/core": "7.6.10",
     "@number-flow/react": "^0.6.2",
     "@tanstack/react-virtual": "^3.14.20",
     "class-variance-authority": "^0.7.1",
@@ -62,6 +68,7 @@
     "undici": "^7.29.0"
   },
   "devDependencies": {
+    "@capacitor/cli": "7.6.10",
     "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.3.2",
     "@types/node": "^26.1.1",

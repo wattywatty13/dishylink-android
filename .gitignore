@@ -47,3 +47,8 @@ landing/scripts/
 # Unanchored: astro writes this cache into whichever directory it is run from,
 # not only the project root.
 .astro/
+
+# Android build output
+dist-mobile/
+*.apk
+

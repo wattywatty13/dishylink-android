@@ -95,7 +95,7 @@ export function ObstructionCard({
             </SkyControl>
           </span>
           <button
-            className='pointer-events-auto cursor-pointer border-0 bg-transparent p-0 font-sans text-[13px] font-semibold text-(--accent) transition-[color,opacity] duration-120 hover:opacity-75'
+            className='pointer-events-auto cursor-pointer whitespace-nowrap border-0 bg-transparent p-0 font-sans text-[13px] font-semibold text-(--accent) transition-[color,opacity] duration-120 hover:opacity-75'
             onClick={onOpenSatelliteView}
           >
             {t("obstruction.liveSatelliteView")}

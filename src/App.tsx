@@ -143,7 +143,14 @@ export default function App() {
               notificationsBlockedReason={notificationsBlockedReason}
               onToggleNotifications={() => void toggleNotifications()}
             />
-            <AppToolbar activeId={openPanel} onSelect={openNav} />
+            <AppToolbar
+              activeId={openPanel}
+              onSelect={openNav}
+              onHome={() => {
+                setOpenPanel(null);
+                setSkyViewOpen(false);
+              }}
+            />
 
             <DashboardView
               status={status}

@@ -1,0 +1,6 @@
+/* The shared app's stylesheet. This build's root is mobile/, so Tailwind's
+   automatic source scan would only see this folder; point it at the app tree. */
+@import "../src/index.css";
+@source "../src";
+@source "../core";
+@source "./";

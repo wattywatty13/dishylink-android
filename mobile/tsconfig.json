@@ -1,0 +1,19 @@
+// Typechecks the Android entry. `wxt/browser` and `#imports` resolve to the
+// Android stand-ins (as they do in vite.mobile.config.ts), so the reused
+// extension modules are checked against what the shim actually provides.
+{
+  "extends": "../tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.mobile.tsbuildinfo",
+    // The extension code reused here is checked upstream without this rule.
+    "noUnusedParameters": false,
+    "paths": {
+      "@/*": ["../src/*"],
+      "@core/*": ["../core/*"],
+      "@cloud/*": ["../cloud/*"],
+      "wxt/browser": ["./shim/browser.ts"],
+      "#imports": ["./shim/imports.ts"]
+    }
+  },
+  "include": ["**/*", "../src/vite-env.d.ts"]
+}

@@ -113,8 +113,28 @@ export function createSkyCamera(
     // with the view rather than RESUME_AFTER_DRAG_MS into the page's life.
     lastInteraction = Number.NEGATIVE_INFINITY;
   let pressAt: { x: number; y: number } | null = null;
+  // Touch: every finger on the canvas, so two of them can pinch to zoom — the
+  // touch counterpart of the wheel. `pinchSpread` is the last gap between them.
+  const fingers = new Map<number, { x: number; y: number }>();
+  let pinchSpread = 0;
+  const spread = () => {
+    const [a, b] = [...fingers.values()];
+    return a && b ? Math.hypot(a.x - b.x, a.y - b.y) : 0;
+  };
 
   const onPointerDown = (e: PointerEvent) => {
+    fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (zoomable && fingers.size === 2) {
+      // A second finger turns the gesture into a pinch: no orbit, no tap.
+      canvas.setPointerCapture(e.pointerId);
+      dragging = false;
+      pressAt = null;
+      velocity = 0;
+      resetTo = null;
+      pinchSpread = spread();
+      lastInteraction = performance.now();
+      return;
+    }
     dragging = true;
     resetTo = null;
     lastX = e.clientX;
@@ -125,6 +145,17 @@ export function createSkyCamera(
     pressAt = { x: e.clientX, y: e.clientY };
   };
   const onPointerMove = (e: PointerEvent) => {
+    if (fingers.has(e.pointerId)) fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (zoomable && fingers.size >= 2) {
+      const next = spread();
+      if (pinchSpread > 0 && next > 0) {
+        // Fingers apart = closer in, as on a map.
+        distance = Math.min(DISTANCE_MAX, Math.max(floor(), (distance * pinchSpread) / next));
+      }
+      pinchSpread = next;
+      lastInteraction = performance.now();
+      return;
+    }
     if (!dragging) return;
     const dx = e.clientX - lastX,
       dy = e.clientY - lastY;
@@ -135,7 +166,19 @@ export function createSkyCamera(
     lastY = e.clientY;
     lastInteraction = performance.now();
   };
-  const onPointerUp = () => {
+  const onPointerUp = (e: PointerEvent) => {
+    const wasPinch = fingers.size >= 2;
+    fingers.delete(e.pointerId);
+    if (fingers.size < 2) pinchSpread = 0;
+    if (wasPinch && fingers.size === 1) {
+      // Lifting one finger of a pinch hands the orbit to the one still down,
+      // from where it is now, so the view does not jump.
+      const [rest] = fingers.values();
+      lastX = rest.x;
+      lastY = rest.y;
+      dragging = true;
+      return;
+    }
     dragging = false;
   };
   // A click is a press that did not turn into an orbit drag.
@@ -159,6 +202,8 @@ export function createSkyCamera(
   // On window, not the canvas: a drag that ends outside the canvas still has to
   // stop the orbit, or the camera keeps following the pointer.
   addEventListener("pointerup", onPointerUp);
+  // A touch the system takes over (a gesture, a call) ends without a pointerup.
+  addEventListener("pointercancel", onPointerUp);
   // Only bound when zooming is offered: this handler calls preventDefault, so
   // attaching it to a fixed-framing canvas would swallow the page's scroll.
   if (zoomable) canvas.addEventListener("wheel", onWheel, { passive: false });
@@ -238,6 +283,7 @@ export function createSkyCamera(
       canvas.removeEventListener("pointerup", onCanvasPointerUp);
       canvas.removeEventListener("pointermove", onPointerMove);
       removeEventListener("pointerup", onPointerUp);
+      removeEventListener("pointercancel", onPointerUp);
       if (zoomable) canvas.removeEventListener("wheel", onWheel);
     },
   };

@@ -15,6 +15,10 @@ function buildTarget(): string | undefined {
 }
 
 export function reviewStore(): ReviewStore | null {
+  // The Android app is an unofficial port with no listing of its own, so it never
+  // asks for a review of the desktop app or the extension.
+  if (typeof document !== "undefined" && document.documentElement.dataset.host === "android")
+    return null;
   if (typeof window !== "undefined" && window.dishlink) return "site";
 
   const target = buildTarget();

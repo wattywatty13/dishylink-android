@@ -1,0 +1,12 @@
+/* Android app chrome. The native side keeps the page clear of the status and
+   navigation bars (capacitor.config.json: adjustMarginsForEdgeToEdge). */
+:root[data-host="android"] body {
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+/* Room for the phone menu's button (ToolbarMenu) left of the logo. */
+:root[data-host="android"] header {
+  padding-left: 60px;
+  min-height: 56px;
+}

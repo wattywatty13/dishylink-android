@@ -26,7 +26,12 @@ interface FigureRowProps {
 // Two typographic scales for the same markup: the headline pair and the smaller
 // pair a secondary section (router ping success) shows beneath it.
 const SIZES = {
-  lg: { gap: "gap-7", value: "text-[36px]", unit: "text-[14px]", label: "text-[12px]" },
+  lg: {
+    gap: "gap-7 max-sm:gap-4",
+    value: "text-[36px] max-sm:text-[28px]",
+    unit: "text-[14px]",
+    label: "text-[12px]",
+  },
   sm: { gap: "gap-6", value: "text-[26px]", unit: "text-[12px]", label: "text-[11px]" },
 } as const;
 

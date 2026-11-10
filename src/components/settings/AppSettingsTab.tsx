@@ -24,6 +24,7 @@ import {
   subscribeToToolbarStyle,
   type ToolbarStyle,
 } from "../../lib/toolbarStyle";
+import { usesPhoneMenu } from "../../lib/phoneMenu";
 import {
   readLocale,
   setLocale,
@@ -375,24 +376,26 @@ export function AppSettingsTab({ clients }: { clients: WifiClientJson[] }) {
       <LanguageRow />
       <TimeFormatRow />
 
-      <SettingRow title={t("settings.appToolbar")} caption={t("settings.appToolbarDesc")}>
-        <Select
-          value={toolbarStyle}
-          onValueChange={(value) => setToolbarStyle(value as ToolbarStyle)}
-        >
-          <SelectTrigger className={triggerClass} style={{ width: 118 }}>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className={selectContentClass}>
-            <SelectItem value='dock' className={selectItemClass}>
-              {t("settings.dock")}
-            </SelectItem>
-            <SelectItem value='rail' className={selectItemClass}>
-              {t("settings.rail")}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </SettingRow>
+      {!usesPhoneMenu() && (
+        <SettingRow title={t("settings.appToolbar")} caption={t("settings.appToolbarDesc")}>
+          <Select
+            value={toolbarStyle}
+            onValueChange={(value) => setToolbarStyle(value as ToolbarStyle)}
+          >
+            <SelectTrigger className={triggerClass} style={{ width: 118 }}>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className={selectContentClass}>
+              <SelectItem value='dock' className={selectItemClass}>
+                {t("settings.dock")}
+              </SelectItem>
+              <SelectItem value='rail' className={selectItemClass}>
+                {t("settings.rail")}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </SettingRow>
+      )}
 
       <SelfDeviceRow clients={clients} />
 

@@ -18,7 +18,8 @@ export interface StatTileProps {
 // Card shell + tile layout. The clickable variant is a real <button>, so it has to
 // undo what the browser gives buttons — appearance, font and text alignment — to
 // sit flush with the static tiles beside it.
-const tileBase = "flex min-w-0 flex-col gap-1 rounded-xl bg-card px-[17px] py-[15px]";
+const tileBase =
+  "flex min-w-0 flex-col gap-1 rounded-xl bg-card px-[17px] py-[15px] max-sm:px-3.5 max-sm:py-3";
 const tileClickable =
   "cursor-pointer border-0 text-left text-inherit [appearance:none] [font:inherit] [transition:background_120ms_ease,transform_120ms_ease] hover:bg-secondary active:scale-[0.99]";
 
@@ -42,8 +43,11 @@ export function StatTile({
         {label}
         {onOpenDetail && <span className='text-[16px] leading-none text-muted-foreground'>›</span>}
       </span>
-      <div className='flex min-h-10 items-center gap-1.5'>
-        <span className='text-[34px] font-bold leading-none tracking-[-0.01em]'>{value}</span>
+      {/* On a phone's half-width tile the sparkline drops under the number. */}
+      <div className='flex min-h-10 items-center gap-1.5 max-sm:flex-wrap max-sm:gap-y-1.5'>
+        <span className='text-[34px] font-bold leading-none tracking-[-0.01em] max-sm:text-[28px]'>
+          {value}
+        </span>
         {unit && (
           <span className='self-end pb-[5px] text-[13px] font-medium text-muted-foreground'>
             {unit}
@@ -53,7 +57,7 @@ export function StatTile({
           <Sparkline
             values={sparkValues}
             colorVar={sparkColorVar}
-            className='ml-1 block min-w-0 flex-1'
+            className='ml-1 block min-w-0 flex-1 max-sm:ml-0 max-sm:basis-full'
           />
         )}
       </div>

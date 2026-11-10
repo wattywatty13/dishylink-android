@@ -1,313 +1,250 @@
-# <img src="docs/logo.svg" alt="" width="34" height="34" align="top"> Dishylink
+# Dishylink for Android (unofficial port)
 
-[![Downloads](https://img.shields.io/github/downloads/DaveyHert/dishylink/total.svg)](https://github.com/DaveyHert/dishylink/releases)
-[![macOS](https://img.shields.io/badge/macOS-12.0+-black.svg)](https://github.com/DaveyHert/dishylink/releases/latest)
-[![Windows](https://img.shields.io/badge/Windows-10+-0078D4.svg)](https://github.com/DaveyHert/dishylink/releases/latest)
-[![Browsers](https://img.shields.io/badge/Chrome%20%7C%20Edge%20%7C%20Firefox-extension-FF6F00.svg)](#browser-extension-chrome-edge-firefox)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![X](https://img.shields.io/badge/X-%23000000.svg?style=flat&logo=X&logoColor=white)](https://x.com/daveyhert)
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-%23FFDD00.svg?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/daveyhert)
+An Android app for monitoring your Starlink dish and router: live speed, latency, obstructions,
+the 3D satellite sky view, speed tests, dish alignment, data usage, alerts and background
+history recording.
 
-An open-source Starlink desktop app for macOS, Windows and browsers to monitor
-the performance and health of your Starlink.
+It is a port of **[Dishylink](https://github.com/DaveyHert/dishylink)** by daveyhert, which
+runs on Windows, macOS and as a browser extension. Nearly all of the app is Dishylink's own code;
+this fork wraps it for Android and adapts the layout for phones. The original project's README
+is kept in [README.upstream.md](README.upstream.md).
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="landing/src/assets/shots/dashboard-dark.png">
-  <img alt="The Dishylink dashboard: download, upload, latency, power draw, ping success and sky-obstruction tiles above live throughput, latency and power charts, with the 3D obstruction dome and an events and outages log alongside." src="landing/src/assets/shots/dashboard-light.png">
-</picture>
+> [!WARNING]
+> **This Android port was written by an AI.** The Android-specific code (the Capacitor shell,
+> native Java layer, browser-API stand-in, phone layout and build setup) was written by
+> Anthropic's Claude (Claude Code, model Claude Opus 5.5) working from a user's requests and
+> feedback. It has passed the project's automated tests and has been used on one phone (a
+> Samsung Galaxy S25 Ultra), but it has **not** been reviewed line by line by a human
+> developer. Use it at your own risk, and read the code before you trust it with your
+> Starlink account.
 
-It reads your dish and router directly over your local network, so it keeps
-working during an outage — which is exactly when you want to see what happened.
-No account, no cloud, no telemetry: everything it records is written to your own
-machine and stays there. Connecting a Starlink account is optional. It adds
-your plan and billing figures and enables supported router controls such as
-pausing connected devices. Your session remains stored locally and is sent
-only to Starlink.
+> [!NOTE]
+> Not affiliated with, endorsed by, or sponsored by SpaceX or Starlink, and not an official
+> Dishylink release. Please don't send bug reports about the Android port to the upstream
+> project. See [DISCLAIMER.md](DISCLAIMER.md) and [PRIVACY.md](PRIVACY.md).
 
-## <img src="docs/platforms/download.svg" alt="" width="22" height="22" align="top"> Download
+- **Version:** 0.4.0 (debug build). See [CHANGELOG-ANDROID.md](CHANGELOG-ANDROID.md).
+- **Requires:** Android 6.0 (API 23) or newer, and the phone on your Starlink Wi-Fi.
+- **License:** MIT, the same as upstream ([LICENSE](LICENSE)).
 
-| Platform                                                                                     | Format    | Architecture           |                                                                                                                                                          |
-| :------------------------------------------------------------------------------------------- | :-------- | :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| <img src="docs/platforms/apple.svg" alt="" width="16" align="top"> **macOS** 12+             | `DMG`     | `arm64`: Apple silicon |                                       [<img src="docs/platforms/download.svg" alt="Download" width="16">][latest]                                        |
-| <img src="docs/platforms/apple.svg" alt="" width="16" align="top"> **macOS** 12+             | `DMG`     | `x64`: Intel           |                                       [<img src="docs/platforms/download.svg" alt="Download" width="16">][latest]                                        |
-| <img src="docs/platforms/windows.svg" alt="" width="16" align="top"> **Windows** 10+         | `EXE`     | Universal              |                                       [<img src="docs/platforms/download.svg" alt="Download" width="16">][latest]                                        |
-| <img src="docs/platforms/windows.svg" alt="" width="16" align="top"> **Windows** 10+         | `EXE`     | `x64`                  |                                       [<img src="docs/platforms/download.svg" alt="Download" width="16">][latest]                                        |
-| <img src="docs/platforms/windows.svg" alt="" width="16" align="top"> **Windows** 10+         | `EXE`     | `arm64`                |                                       [<img src="docs/platforms/download.svg" alt="Download" width="16">][latest]                                        |
-| <img src="landing/public/browsers/chrome.svg" alt="" width="16" align="top"> **Chrome** 144+ | Extension | Any                    | [<img src="docs/platforms/download.svg" alt="Download" width="16">](https://chromewebstore.google.com/detail/dishylink/pljgamnkfokhbchiiommnblkjffffnna) |
-| <img src="landing/public/browsers/edge.svg" alt="" width="16" align="top"> **Edge**          | Extension | Any                    | [<img src="docs/platforms/download.svg" alt="Download" width="16">](https://microsoftedge.microsoft.com/addons/detail/pknccegejhlgmeiojalenedmkbcaimdo)  |
-| <img src="landing/public/browsers/firefox.svg" alt="" width="16" align="top"> **Firefox**    | Extension | Any                    |                     [<img src="docs/platforms/download.svg" alt="Download" width="16">](https://addons.mozilla.org/addon/dishylink/)                     |
+---
 
-[latest]: https://github.com/DaveyHert/dishylink/releases/latest
+## Contents
 
-Not sure which to pick? On Windows, take Universal. On macOS, take `arm64` for
-Apple silicon (M1 and later) or `x64` for Intel.
+- [Features](#features)
+- [How the port works](#how-the-port-works)
+- [Building the APK from source](#building-the-apk-from-source)
+- [Installing on a phone](#installing-on-a-phone)
+- [Developing without a dish](#developing-without-a-dish)
+- [Tests and checks](#tests-and-checks)
+- [Known limitations](#known-limitations)
+- [What changed in the shared code](#what-changed-in-the-shared-code)
 
-> **macOS: first launch**
->
-> The Mac build isn't signed with an Apple Developer ID yet, so macOS blocks it
-> the first time you open it. To allow it:
->
-> 1. Open Dishylink once and close the warning.
-> 2. Go to **System Settings › Privacy & Security**.
-> 3. Scroll to **Security** and click **Open Anyway** next to the Dishylink
->    message.
->
-> You only need to do this once.
+---
 
 ## Features
 
-### What it shows
+Everything the desktop app and browser extension do, on a phone:
 
-- **Stat tiles**: live downlink and uplink, pop-ping latency, power draw in watts,
-  60-second ping-success rate and sky-obstruction fraction. Each carries a
-  sparkline and opens into a detail panel.
-- **Throughput chart**: download and upload across 15m, 1h and 6h windows on the
-  dashboard, or by day, week and month from recorded history rather than only what
-  the current tab has seen.
-- **Latency chart**: bucketed by _max_, so spikes survive downsampling instead of
-  averaging away. Outages are drawn as red bands.
-- **Energy and power chart**: what the dish actually draws over time, with kWh
-  totals by day, week and month, and honest gaps wherever recording stopped.
-- **Sky obstruction map**: the dish's 123×123 SNR grid drawn as a polar sky dome,
-  with obstructed cells escalating through a status palette.
-- **Obstruction time-lapse**: scrub back through hourly snapshots of the sky
-  survey, with LIVE as the last stop.
-- **Sky view**: a full-viewport scene of the dome, your dish, and the satellite
-  constellation passing overhead. Click any satellite for its pass details.
-- **Alignment dials**: rotation and tilt against the desired azimuth and elevation
-  band, ported from the dish's own web app.
-- **Data usage**: self-measured download and upload volume by day, week and month,
-  plus **per-device usage** for the billing month taken from the router's own
-  per-client counters. Name your devices and see vendor, device type and last-seen
-  times.
-- **Network**: router radio temperatures, the client list, per-client throughput
-  and the router's own event log.
-- **Event logs**: outages, thermal events, and a terminal panel covering firmware,
-  GPS, alignment, mesh routers and alerts.
-- **Speed test and alerts**: on-demand speed tests, alerts graded by severity with
-  an in-app bell, and light, dark or system instrument themes.
-- **Cloud account tab** (optional, opt-in): your Starlink plan, billing cycles and
-  authoritative monthly data usage, plus the authenticated controls your router
-  supports.
+- **Dashboard:** live download/upload, latency, packet loss, uptime, obstruction map, events.
+- **Satellite view:** the 3D sky with live Starlink satellites (orbits from celestrak.org),
+  drag to orbit and pinch to zoom.
+- **Speed test** (Cloudflare), **Alignment** helper, **Network** devices, **Data usage**.
+- **Starlink account:** sign in to starlink.com inside the app to see plan and usage data.
+- **Alerts:** Android notifications for outages, obstructions and other dish alerts.
+- **Background recording:** a foreground service keeps history recording while the app is in
+  the background ("Recording your Starlink" notification, with a *Stop and close* button).
+- **Phone layout:** a ☰ menu in place of the desktop dock, two-column stat tiles, and screens
+  sized for portrait. Landscape and tablets keep the desktop layout.
 
-### What it controls
+## How the port works
 
-Monitoring is only half of it. Most settings write to the dish or router over
-the same LAN API; controls that current firmware rejects locally are identified
-below as requiring an optional Starlink account connection:
+Dishylink is built so the same React app (`src/`) can run on different "hosts". The desktop
+app and the browser extension each plug in their own way of reaching the dish. The Android
+app reuses the **browser extension's** host code and background recorder, and supplies the
+pieces a browser normally would:
 
-- **Snow melt**: automatic, always on, or off.
-- **Sleep schedule**: power the dish down for a set number of hours each day.
-- **Software updates**: pick the reboot window, or defer updates for 3 days.
-- **Maintenance**: reboot the dish, reset the learned obstruction map, and
-  stow/unstow motorized kits.
-- **Router**: SSIDs and their bands, mesh node trust, firmware and country, and
-  a router reboot.
-- **Router address and subnet**: point Dishylink at a router that isn't on the
-  default address, and change the address range the router hands out. Changing the
-  subnet needs a connected account.
-- **Custom DNS**: point the router at your own resolvers.
-- **Bypass mode**: put the router into bridge mode for your own networking gear.
-- **Connected devices**: pause or unpause another device while it is connected.
-  Available in the desktop app and web development harness, this control requires
-  an optional Starlink account sign-in: Dishylink reads the router configuration
-  locally, prepares the smallest accepted client update on the trusted host, and
-  sends it only to Starlink's authenticated device endpoint. The device running
-  Dishylink cannot pause itself, which is what **Your device on this network** in
-  app settings pins down. The browser extension does not expose this control
-  because ordinary desktop extensions cannot reliably read the host computer's LAN
-  IP or MAC address. Although the extension can send the update, it cannot prove
-  which router client is itself and therefore cannot safely prevent self-pausing.
-- **Copy debug data**: diagnostics + status + config as JSON, for bug reports.
+| Piece | File | What it does |
+| --- | --- | --- |
+| Entry point | `mobile/main.tsx` | Binds the shared app to the extension's host modules, starts the extension's background recorder in the same page, starts the native recorder service. |
+| Browser API stand-in | `mobile/shim/browser.ts` | Implements the parts of the WebExtension API the extension code uses (storage, messaging, alarms, notifications, cookies, header rules) on top of the WebView and the native plugin. `vite.mobile.config.ts` aliases `wxt/browser` and `#imports` to it. |
+| Native networking | `mobile/nativeFetch.ts` | Routes dish and router traffic (plain HTTP on the LAN), starlink.com and celestrak.org through native HTTP. This avoids CORS and mixed-content blocks and leaves out the Origin/Referer headers, which the dish rejects. The speed test stays on the WebView's normal fetch. |
+| Native plugin | `android/app/src/main/java/com/dishylink/android/StarlinkNativePlugin.java` | HTTP, reading sign-in cookies, notifications, starting/stopping the recorder. |
+| Recorder service | `.../RecorderService.java` | Foreground service that ticks the recorder every 30 s. The dish keeps about 15 minutes of history, so a late tick catches up rather than losing data. |
+| Starlink sign-in | `.../SignInActivity.java` | starlink.com in an in-app browser screen. You sign in yourself; the app reads the session cookie from Android's cookie store. Your password never passes through the app's code. |
+| Main screen | `.../MainActivity.java` | Hosts the WebView, dark system bars, Back button behaviour. |
 
-Content filtering is deliberately _not_ exposed: a bad write there can take the
-WiFi down until a physical reset.
+No new polling was added: the app makes the same dish and router requests as the browser
+extension, and never calls the router's `get_ping` (see [CLAUDE.md](CLAUDE.md)).
 
-### Network rules
+---
 
-Meter any device on your network and pause it automatically when it goes over.
+## Building the APK from source
 
-- **Three kinds of limit**: a data allowance, a schedule that pauses by the clock,
-  or a countdown that runs for a set stretch of time.
-- **One device or a group**: meter a device on its own, or group several together.
-  A group can either pool its allowance, so members spend from one shared budget
-  and run out together, or give each member the full allowance to spend
-  independently.
-- **One list for everything**: every rule on the network appears in one place,
-  whether you wrote it there or from a device's own card, each showing how much of
-  its limit is left.
-- Rules use the same account-connected pausing described above, including the
-  protection that stops Dishylink pausing the device it is running on.
+These are the exact steps used to build the published APK, on Windows 11. The same steps
+work on macOS and Linux with the usual path and shell changes.
 
-## Three ways to run it in dev
+### 1. Install the tools
 
-Dishylink ships as three independent products from one codebase. To run any of
-them from source:
+| Tool | Version used | Notes |
+| --- | --- | --- |
+| Git | 2.50 | |
+| Node.js | 22.15.1 (npm 10.9.2) | Node 20 or newer should work. |
+| JDK | **21** (Eclipse Temurin 21) | Capacitor 7 requires JDK 21; JDK 17 fails with `invalid source release: 21`. |
+| Android SDK | platform-tools, `platforms;android-35`, `build-tools;36.0.0` | Gradle downloads any missing SDK parts on first build if the licences are accepted. |
 
-```bash
+You don't need Android Studio. The SDK command-line tools are enough:
+
+1. Download Temurin JDK 21 (zip) from [adoptium.net](https://adoptium.net) and unzip it, for
+   example to `%LOCALAPPDATA%\jdk21`.
+2. Download the Android **command-line tools** from
+   [developer.android.com/studio](https://developer.android.com/studio#command-tools) and unzip
+   them to `%LOCALAPPDATA%\Android\Sdk\cmdline-tools\latest`.
+3. Install the SDK packages and accept the licences:
+
+   ```powershell
+   $env:JAVA_HOME   = "$env:LOCALAPPDATA\jdk21"
+   $env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
+   & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" "platform-tools" "platforms;android-35" "build-tools;36.0.0"
+   & "$env:ANDROID_HOME\cmdline-tools\latest\bin\sdkmanager.bat" --licenses
+   ```
+
+> **Long paths on Windows:** clone into a short folder (for example `Z:\dev` or `C:\src`).
+> Cloning deep inside your user profile can fail with `Filename too long`.
+
+### 2. Get the code and install dependencies
+
+```powershell
+git clone <this repository's URL> starlink-android
+cd starlink-android
 npm install
-
-npm run dev              # web harness on localhost:5173
-npm run dev:electron     # desktop app on Mac and Linux
-npm run dev:electron:win # desktop app on Windows
-npm run dev:extension    # browser extension, loaded unpacked from .output/ (WXT)
 ```
 
-Windows needs `dev:electron:win` rather than `dev:electron`: it sets the
-environment variable through `cross-env` and skips the icon generation step,
-neither of which works from a Windows shell.
+`npm install` also runs `wxt prepare` (the browser-extension tooling), which the Android build
+needs because it reuses the extension's code.
 
-All three read the real hardware, so you have to be on the Starlink LAN for
-anything to appear. Tests and typechecks run anywhere.
+### 3. Build the web bundle and copy it into the Android project
 
-They don't talk to each other or share a runtime: each independently polls the
-dish/router and records its own history. Packaging:
-
-```bash
-npm run pack:mac        # Mac build, ad-hoc signed (no Developer ID)
-npm run pack:win        # Windows build
-npm run build:extension # Chromium extension bundle
-npm run build:extension:firefox
-npm run build:extension:edge
-docker compose up --build   # browser dashboard + recorder, this machine only
+```powershell
+npx vite build --config vite.mobile.config.ts
+npx cap sync android
 ```
 
-### Docker (browser)
+or simply `npm run build:android`. This builds the dashboard from `mobile/` (which pulls in
+`src/`, `core/` and `extension/`) into `dist-mobile/`, then Capacitor copies it into
+`android/app/src/main/assets/public`.
 
-Packages the web dashboard and the history recorder in one container. The
-image is built **only for the CPU of the machine you clone and build on** —
-amd64 on an x86 box, arm64 on Apple Silicon or a 64-bit Raspberry Pi. Compose
-does not cross-build. Open `http://localhost:8080`. The **host running Docker
-must be on the Starlink LAN** — the dish (`192.168.100.1`) and router
-(`192.168.1.1`) are reached through the host, not from inside Compose. Docker
-Desktop has no real `--network host`; do not set it.
+### 4. Build the APK with Gradle
 
-```bash
-docker compose up --build
+```powershell
+cd android
+$env:JAVA_HOME    = "$env:LOCALAPPDATA\jdk21"
+$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
+.\gradlew.bat assembleDebug
+cd ..
 ```
 
-A Raspberry Pi 4/5 needs the 64-bit OS and enough RAM for the Vite build
-(4 GB is comfortable; 2 GB often OOMs).
+(On macOS/Linux: `export JAVA_HOME=...; export ANDROID_HOME=...; ./gradlew assembleDebug`.)
+`npm run apk:android` runs the same Gradle task if `JAVA_HOME` and `ANDROID_HOME` are already
+set. You can also put `sdk.dir=...` in `android/local.properties` instead of `ANDROID_HOME`.
 
-Recordings, and a pasted starlink.com session, persist in the `historian-data`
-volume — a session survives a restart with no extra mount needed. If
-`com.dishylink.historian` is already running under launchd, stop it first —
-two recorders double the router's 200 ms client poll.
+The first build downloads Gradle and the Android libraries and takes a few minutes. The result is:
 
-Optional, in `compose.yaml`:
-
-- `HOST_LAN_IP` / `HOST_MAC` — the host's LAN address, so "This device" and
-  pause-self-protect still work through Docker Desktop's port publish.
-
-Cloud session writes stay localhost-only. Opening the dashboard via the host's
-LAN IP from a phone still shows live data and history.
-
-Useful while working on it:
-
-```bash
-npm run historian       # standalone energy collector, serving /api/energy
-npm run test:watch      # vitest in watch mode
-npm run lint:fix        # eslint with --fix
+```
+android/app/build/outputs/apk/debug/app-debug.apk   (about 5.7 MB)
 ```
 
-A fresh desktop build opens with no history by design: it fills up as it runs.
+The published file `Dishylink-android-debug.apk` is that file, renamed.
 
-### Desktop app (Mac, Windows)
+### Release builds
 
-- Lives in the tray / menu bar and **keeps recording after its window is
-  closed**; it quits only from the tray's Quit.
-- **Live throughput readout** — ↓/↑ rates in the macOS menu bar, or a draggable
-  always-on-top pill on Windows. Whichever surface, the open window feeds it
-  when there is one and the recorder takes over when there isn't, so the dish is
-  never polled twice.
-- **Start at Login**, launching hidden, so collection covers the outages that
-  happen while nobody is looking.
-- Native OS notifications for alerts when the window isn't in front, throttled
-  so a flapping link can't spam.
-- Auto-updates, and remembers its window position across runs and displays.
+The APK above is **debug-signed**: fine for installing on your own phone, not for the Play
+Store. For a release build, create a keystore, add a `signingConfigs` block to
+`android/app/build.gradle`, and run `.\gradlew.bat assembleRelease`. Never commit the keystore.
 
-### Browser extension (Chrome, Edge, Firefox)
+---
 
-Install it from the
-[Chrome Web Store](https://chromewebstore.google.com/detail/dishylink/pljgamnkfokhbchiiommnblkjffffnna),
-[Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/pknccegejhlgmeiojalenedmkbcaimdo)
-or [Firefox Add-ons](https://addons.mozilla.org/addon/dishylink/).
+## Installing on a phone
 
-- The toolbar icon opens the dashboard as a chromeless window (default) or an
-  ordinary tab — never a cramped toolbar popup.
-- **Toolbar badge** — the number of alerts firing right now, tinted by the worst
-  one's severity, so it reads the same outside the app as the bell does inside.
-- **Recording** — its own history store in IndexedDB, filled by a 30s
-  `chrome.alarms` tick that survives service-worker teardown, with honest
-  coverage gaps for stretches when the browser was closed.
-- Chrome 144+ — below that a Local Network Access bug makes the worker silently
-  collect nothing.
+1. Copy the APK to the phone (USB, cloud drive, email to yourself) and open it. Android will
+   ask you to allow your file manager or browser to *install unknown apps*.
+   Or, with USB debugging on: `adb install -r Dishylink-android-debug.apk`.
+2. Connect the phone to your **Starlink Wi-Fi** (the app talks to the dish at `192.168.100.1`
+   and the router at `192.168.1.1`).
+3. Open Dishylink and allow notifications if you want alerts.
+4. Optional: in the menu, open **Account** and sign in to starlink.com to see plan and usage.
 
-Dev workflow:
+To update, install the new APK over the old one. Your settings and history are kept.
 
-```bash
-npm test                # vitest
-npm run typecheck       # tsc -b
-npm run lint            # eslint
+---
+
+## Developing without a dish
+
+`dev/fakeDish.mts` is a small fake dish and router that answers the app's requests with
+believable data, so you can work on the layout away from a Starlink connection:
+
+```powershell
+npx tsx dev/fakeDish.mts                                # fake dish on :9201, router on :9001
+npx vite --config vite.mobile.config.ts                 # dev server on http://localhost:5180
 ```
 
-Diagnostics:
+Open `http://localhost:5180`, run `localStorage.fakeDish = "1"` in the browser console and
+reload. Use the browser's device toolbar at a phone width (for example 412 × 915) to see the
+phone layout. The fake dish is used only by the development server, never in the APK.
 
-```bash
-node scripts/debug-decode.mjs <captured-body.bin>   # decode a captured response
-node scripts/debug-browser.mjs                      # probe fetch path in headless Chrome
+To debug the real app on a phone, `webContentsDebuggingEnabled` is on in debug builds: open
+`chrome://inspect` on a computer with the phone connected by USB.
+
+---
+
+## Tests and checks
+
+```powershell
+npm run test:android        # unit tests for the browser-API stand-in and native-fetch routing
+npm run typecheck:android   # TypeScript check of mobile/
+npx tsc -b                  # TypeScript check of the shared app
+npm run lint
+npx vitest run --project node   # the upstream test suite (1,144 tests at the time of 0.4.0)
 ```
 
-## How it talks to the dish and router
+All of these passed for 0.4.0. The upstream browser-based tests (Playwright) were not run.
 
-The dish serves its API at `192.168.100.1` on two ports; the router answers
-a matching API on its own LAN address:
+---
 
-| Port | Protocol                | Notes                               |
-| ---- | ----------------------- | ----------------------------------- |
-| 9200 | native gRPC (HTTP/2)    | used by `grpcurl`, has reflection   |
-| 9201 | **grpc-web** (HTTP/1.1) | what this app uses from the browser |
+## Known limitations
 
-Two quirks discovered while building (both handled by the Vite proxy in dev,
-and by the host's own transport in Electron/the extension):
+- **Background recording.** Recording continues while the app is in the background (Back sends
+  it there). Swiping it away from Recents, or *Stop and close* on the notification, stops it.
+  Some phone makers close background apps aggressively; set the app's battery use to
+  *Unrestricted* if your history has gaps.
+- **This device.** Android hides the phone's Wi-Fi MAC address, so, as in the browser
+  extension, pick which device is this phone in the device list to get accurate self-usage.
+- **Tested hardware.** Used on a Samsung Galaxy S25 Ultra only. Layout was also checked in a
+  browser at 384 and 412 px wide.
+- **Debug build.** See [Release builds](#release-builds).
 
-1. **CORS allowlist** — port 9201 only answers CORS preflights for the dish's
-   own origin, so a third-party web page cannot call it cross-origin.
-2. **Referer guard** — requests carrying an unrecognized `Referer` header get
-   an empty 200 back; the transport strips `Referer`/`Origin` before forwarding.
+---
 
-Protobuf schema is **not guessed**: `schema/dish.protoset` was dumped from the
-dish's own gRPC reflection service and is decoded at runtime with
-`@bufbuild/protobuf` (`core/dishClient.ts`). To refresh the schema after a
-firmware update:
+## What changed in the shared code
 
-```bash
-grpcurl -plaintext -protoset-out schema/dish.protoset \
-  192.168.100.1:9200 describe SpaceX.API.Device.Device
-cp schema/dish.protoset public/dish.protoset
-```
+The Android work is mostly new files (`mobile/`, `android/`, `vite.mobile.config.ts`,
+`capacitor.config.json`, `dev/fakeDish.mts`). Changes to the shared app in `src/` are
+limited to phone-only styling (Tailwind `max-sm:` classes, which only apply below 640 px) and
+a few Android-only switches keyed off `data-host="android"`:
 
-The dish's history ring buffer (900 samples @ 1 Hz) is unrolled via its
-absolute sample counter (`core/telemetry.ts`); note it reports `outages[]`
-timestamps in the **GPS epoch** while `eventLog` uses Unix — the converter
-accounts for the 18 leap seconds. See `LOCAL-API.md` for the full set of
-measured behaviours, quirks, and dead-end fields on this firmware.
+- `src/components/toolbar/ToolbarMenu.tsx` (new) and `src/lib/phoneMenu.ts` (new): the ☰ menu.
+- `src/components/satellite/skyCamera.ts`: pinch-to-zoom on touch screens.
+- `src/components/satellite/SatelliteView.tsx`: phone layout and the ⓘ details toggle.
+- Dashboard, top bar, stat tiles, modals: phone spacing and sizes.
+- `core/i18n/locales/*.json`: four new strings (menu "Dashboard", touch hint, show/hide details).
+- `src/lib/storeReview.ts`: no "review us" prompt on Android.
 
-## Recorded history
+Desktop, landscape and browser-extension behaviour is unchanged.
 
-The dish and router only hold a few minutes to a few hours locally. An
-always-on **history recorder** (`collector/`, the "historian") polls
-continuously and writes append-only local records so day/week/month views
-have real data behind them — never anything invented across a gap; every
-range reports what fraction of it was actually sampled. See
-`collector/README.md` for how it runs and its on-disk format.
+## Credits
 
-Everything above is local-only by design: your telemetry, your history, your
-storage, never transmitted.
-
-## License
-
-MIT. See [LICENSE](LICENSE).
-
-Dishylink is an unofficial, independent project with no affiliation to SpaceX or
-Starlink. Starlink is a trademark of Space Exploration Technologies Corp.
+- **Dishylink** © daveyhert, MIT licence: the dashboard, dish client, recorder and nearly
+  everything you see. <https://github.com/DaveyHert/dishylink>
+- **Android port:** written by Claude (Anthropic) in Claude Code, directed and tested by the
+  repository owner.
+- [Capacitor](https://capacitorjs.com) by Ionic, for the Android shell.

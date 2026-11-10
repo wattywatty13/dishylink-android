@@ -696,6 +696,9 @@
     "waitingForMap": "En attente de la carte des obstructions de l'antenne…",
     "timeLapse": "évolution",
     "controlsHint": "Glisser pour orbiter · Molette pour zoomer · Échap pour fermer",
+    "controlsHintTouch": "Faites glisser pour orbiter · Pincez pour zoomer",
+    "showDetails": "Afficher les détails",
+    "hideDetails": "Masquer les détails",
     "closeDetails": "Fermer les détails du satellite",
     "elevation": "élévation",
     "azimuth": "azimut",
@@ -804,6 +807,7 @@
     "bucketTotal": "{{when}} · {{kwh}} kWh"
   },
   "navigation": {
+    "dashboard": "Tableau de bord",
     "speedTest": "Test de débit",
     "alignment": "Alignement",
     "dataUsage": "Utilisation des données",
